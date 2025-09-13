@@ -6,6 +6,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env
     # The port is no longer exposed to the host.
     # Nginx will access it via the internal Docker network.
 
@@ -13,9 +15,9 @@ services:
     image: nginx:latest
     restart: always
     ports:
-      - "80:80" # Expose port 80 to the host
+      - "8080:80" # Expose port 80 to the host for tuna
     volumes:
-      - ./frontend:/usr/share/nginx/html # Mount frontend files
+      - ./frontend/dist:/usr/share/nginx/html # Mount frontend build artifacts
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf # Mount nginx config
     depends_on:
       - backend
