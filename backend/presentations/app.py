@@ -3,8 +3,6 @@
 
 from fastapi import FastAPI, Depends, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
 
 from utils.logs import logger
 from telegram_webapp_auth.auth import WebAppUser
@@ -13,7 +11,8 @@ from .auth import get_current_user
 from models.models import init_db
 from contextlib import asynccontextmanager
 
-from requests.requests import add_user, get_tasks
+from requests.requests import add_user
+from schemas.base import Message
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -38,9 +37,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class Message(BaseModel):
-    text: str
-
 # эта ручка не защищена
 @router.get("/api/health")
 async def health():
@@ -55,9 +51,9 @@ async def send_message(message: Message):
 
 @router.get("/api/auth-data")
 async def auth(user: WebAppUser = Depends(get_current_user)):
-    logger.info(f"User data: {vars(WebAppUser)}")
-    await add_user(user.id)
-    return await get_tasks(user.id)
+    logger.info(f"User data: {vars(user)}")
+    await add_user(user)
+    return {"status": "ok"}
 
 app.include_router(protected_router)
 app.include_router(router)

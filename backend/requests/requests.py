@@ -1,33 +1,22 @@
-from sqlalchemy import select, update, delete, func
-from models.models import User, async_session, Task
-from pydantic import BaseModel, ConfigDict
-from typing import List
+from sqlalchemy import select
+from models.models import User, async_session
+from telegram_webapp_auth.auth import WebAppUser
 
-class TaskSchema(BaseModel):
-    id: int
-    title: str
-    completed: bool
-    user: int
-
-    model_config = ConfigDict(from_attributes=True)
-
-async def add_user(tg_id: int) -> User:
+async def add_user(user_data: WebAppUser) -> User:
     async with async_session() as session:
         # note that scalar is in single form
-        user = await session.scalar(select(User).where(User.tg_id == tg_id))
+        user = await session.scalar(select(User).where(User.tg_id == user_data.id))
         if user:
             return user
         
-        new_user = User(tg_id=tg_id)
+        new_user = User(
+            tg_id=user_data.id,
+            first_name=user_data.first_name,
+            last_name=user_data.last_name,
+            rating=0,
+            is_admin=False,
+        )
         session.add(new_user)
         await session.commit()
         await session.refresh(new_user)
         return new_user
-    
-async def get_tasks(user_id):
-    async with async_session() as session:
-        tasks = await session.scalars(
-            select(Task).where(Task.user == user_id, Task.completed == False)
-        )
-        serialized_tasks = [TaskSchema.model_validate(t).model_dump() for t in tasks]
-        return serialized_tasks
