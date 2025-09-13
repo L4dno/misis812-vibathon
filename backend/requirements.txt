@@ -1,0 +1,10 @@
+fastapi
+pydantic
+uvicorn
+aiogram
+loguru
+dotenv
+telegram-webapp-auth
+pydantic-settings
+sqlalchemy
+aiosqlite
