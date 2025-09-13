@@ -1,8 +1,8 @@
 import uvicorn
 import asyncio
-from controller.app import app
-from controller.dispatcher import dp, bot
-from shared.logs import configure_logging, logger
+from presentations.app import app
+from presentations.dispatcher import dp, bot
+from utils.logs import configure_logging, logger
 
 async def start_polling():
     await dp.start_polling(bot)

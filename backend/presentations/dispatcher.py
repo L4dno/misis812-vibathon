@@ -5,7 +5,7 @@ from aiogram.types import WebAppInfo
 from aiogram.filters.command import Command
 from aiogram import Bot, Dispatcher, types
 
-from config import TelegramBotSettings
+from utils.config import TelegramBotSettings
 settings = TelegramBotSettings()
 
 bot = Bot(token=settings.bot_token)

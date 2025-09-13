@@ -10,7 +10,7 @@ from telegram_webapp_auth.auth import WebAppUser
 from telegram_webapp_auth.auth import generate_secret_key
 from telegram_webapp_auth.errors import InvalidInitDataError
 
-from config import TelegramBotSettings  # Telegram Bot configuration
+from utils.config import TelegramBotSettings  # Telegram Bot configuration
 
 telegram_authentication_schema = HTTPBearer()
 

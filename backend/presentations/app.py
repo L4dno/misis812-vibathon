@@ -6,14 +6,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from shared.logs import logger
+from utils.logs import logger
 from telegram_webapp_auth.auth import WebAppUser
 from .auth import get_current_user
 
 from models.models import init_db
 from contextlib import asynccontextmanager
 
-import requests.requests as rq
+from requests.requests import add_user, get_tasks
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -38,7 +38,7 @@ async def health():
 @app.get("/api/auth-data")
 async def auth(user: WebAppUser = Depends(get_current_user)):
     logger.info(f"User data: {vars(WebAppUser)}")
-    await rq.add_user(user.id)
-    return await rq.get_tasks(user.id)
+    await add_user(user.id)
+    return await get_tasks(user.id)
 
-app.mount("/", StaticFiles(directory="../frontend", html = True), name="view")
+#app.mount("/", StaticFiles(directory="../frontend", html = True), name="view")

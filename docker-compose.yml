@@ -6,6 +6,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env
     # The port is no longer exposed to the host.
     # Nginx will access it via the internal Docker network.
 
